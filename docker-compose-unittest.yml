@@ -1,0 +1,21 @@
+test_framework:
+    build: .
+    dockerfile: Dockerfile-unittest
+    environment:
+        BROWSER:
+        ENV:
+    volumes:
+        - "results:/test/results"
+    links:
+        - hub
+    command: /test/scripts/run-unittests.sh
+# Selenium grid set up. Note that the selenium hub seems to require that it
+# be called 'hub' in order for the client browser containers to link correctly.
+hub:
+  image: selenium/hub
+  ports:
+    - "4444"
+chrome:
+  image: selenium/node-chrome
+  links:
+    - hub
