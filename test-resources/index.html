@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8"> 
+<title>Unit test index</title>
+<script type="text/javascript">
+function clickFunc() {
+    document.getElementById("demo").innerHTML = "Paragraph changed.";
+}
+function selectFunc() {
+    if (document.getElementById("check1").checked) {
+        document.getElementById("check_text").innerHTML = "CHECKED";
+    } else {
+        document.getElementById("check_text").innerHTML = "CLEARED";
+    }
+}
+</script>
+</head>
+
+<body>
+
+<h1>Unit test page 1</h1>
+
+<p id="demo">A Paragraph.</p>
+<p id="check_text">Python rocks</p>
+
+
+<form id="form_field" accept-charset=utf-8
+      action="unit_test_page2.html" method="get">
+Text 1: <input type="text" name="text1"><br>
+Text 2: <input type="text" name="text2"><br>
+        <input type="checkbox" name="check1" id="check1" value="py" onclick="selectFunc()">
+             Check 1 label
+        <input type="checkbox" name="check2" value="haz"> I can haz text<br>
+        <input type="submit" name="submit" value="Submit">
+</form> 
+<button type="button" name='clickbutton' onclick="clickFunc()">
+     Click me
+</button>
+
+</body>
+</html> 

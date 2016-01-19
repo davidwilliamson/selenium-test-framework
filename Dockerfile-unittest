@@ -1,0 +1,19 @@
+FROM node:5.2.0
+# Includes NPM
+MAINTAINER SaaS Team "<saas@docker.com>"
+
+# run npm install, which collects stuff defined in package.json
+COPY ./package.json /test/
+COPY ./index.js /test/
+WORKDIR /test
+RUN npm install
+#
+# Note: connection to selenium server controlled in our code at
+# src/lib/DriverBuilder.js (what calls the build function there?)
+
+COPY ./.eslintrc.json /test/
+COPY ./lib /test/lib
+COPY ./test /test/test
+COPY ./scripts /test/scripts
+COPY ./test-resources /test/test-resources
+RUN mkdir -p /test/results
