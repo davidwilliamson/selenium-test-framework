@@ -1,5 +1,8 @@
 test_framework:
-    image: test_runner_a
+    # Assumes this image has already been built using our Dockerfile
+    # we do it this way because we want the build context to be the
+    # user's test repository, and we are buried inside node_modules.
+    image: selenium_test_runner
     environment:
         BROWSER:
         ENV:

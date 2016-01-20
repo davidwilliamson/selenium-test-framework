@@ -31,7 +31,7 @@ function cleanup_on_exit() {
 
 # We need the build context to be the user's test repository. That way, our 
 # node package gets installed as a package, not as the source directory.
-docker build -t test_runner_a -f $framework_dir/Dockerfile .
+docker build -t selenium_test_runner -f $framework_dir/Dockerfile .
 docker-compose -f "$compose_file" build
 
 # Start the selenium processes as daemons.
