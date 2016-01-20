@@ -77,7 +77,7 @@ And your Node.js installation
 ```
 {
   "dependencies": {
-      "selenium_test_runner": "git+ssh://git@github.com:davidwilliamson/selenium-test-framework.git"
+    "selenium_test_runner": "git+https://github.com/davidwilliamson/selenium-test-framework.git"
   },
   "scripts": {
     "selenium": "./node_modules/selenium_test_runner/scripts/start-tests.sh",
@@ -86,6 +86,7 @@ And your Node.js installation
 }
 ```
 Now install this repository as an NPM package
+
 `npm install`
 
 # Creating tests

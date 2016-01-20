@@ -1,26 +1,22 @@
 #!/bin/bash
 
+# This script assumes the following directory structure:
+# /some/dir/node_modules/selenium_test_runner/scripts/start-tests.sh
+
+# /some/dir/node_modules/selenium_test_runner/scripts/
 run_dir=$(python -c "import os; print os.path.abspath(os.path.dirname('$0'))")
-module_base_dir=$(dirname $run_dir)
-node_modules_dir="$(dirname $module_base_dir)"
+# /some/dir/node_modules/selenium_test_runner/
+framework_dir=$(dirname $run_dir)
+# /some/dir/node_modules/
+node_modules_dir="$(dirname $framework_dir)"
+# Full path to the users repository (where node_modules/ lives)
 repo_dir="$(dirname $node_modules_dir)"
-export REPO_DIR="${repo_dir}"
+# export paths to user's test source code so compose can link them in to container
 export TESTS_DIR="$repo_dir/test"
 export PAGEOBJECTS_DIR="$repo_dir/pageobjects"
-export FRAMEWORK_DIR="$module_base_dir"
 export RESULTS_DIR="$repo_dir/results"
-echo "REPO          = $repo_dir"
-# echo `pwd`
-# ls $FRAMEWORK_DIR/Dockerfile
-compose_file="${FRAMEWORK_DIR}/docker-compose.yml"
-# ls "$compose_file"
-echo ""
-echo "export REPO_DIR=$REPO_DIR"
-echo "compose_file=$compose_file"
-echo "export RESULTS_DIR=$RESULTS_DIR"
-echo "export TESTS_DIR=$TESTS_DIR"
-echo "export FRAMEWORK_DIR=$FRAMEWORK_DIR"
-echo "export PAGEOBJECTS_DIR=$PAGEOBJECTS_DIR"
+
+compose_file="${framework_dir}/docker-compose.yml"
 
 mkdir -p $RESULTS_DIR
 if [ -e "$RESULTS_DIR/results.xml" ]; then
@@ -35,12 +31,12 @@ function cleanup_on_exit() {
 
 # We need the build context to be the user's test repository. That way, our 
 # node package gets installed as a package, not as the source directory.
-#docker build -t test_runner_a -f /Users/davidwilliamson/Documents/projects/selenium_poc/hub_demo/node_modules/selenium_test_runner/Dockerfile .
-docker build -t test_runner_a -f $FRAMEWORK_DIR/Dockerfile .
+docker build -t test_runner_a -f $framework_dir/Dockerfile .
 docker-compose -f "$compose_file" build
 
 # Start the selenium processes as daemons.
-# firefox will start selenium hub, which it links to
+# chrome will start selenium hub, which it links to
+# TODO we should use $BROWSER here.
 docker-compose -f "$compose_file" up -d chrome
 trap cleanup_on_exit EXIT
 # The test_framework container (and thus the compose command) will exit when node completes

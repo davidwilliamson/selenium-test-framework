@@ -3,8 +3,6 @@ test_framework:
     environment:
         BROWSER:
         ENV:
-        #TESTS_DIR:
-        #PAGEOBJECTS_DIR:
         RESULTS_DIR:
     volumes:
         - "${TESTS_DIR}:/test/test"
