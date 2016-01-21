@@ -2,10 +2,14 @@
 
 Based on [github.com/mekdev/mocha-selenium-pageobject](https://github.com/mekdev/mocha-selenium-pageobject)
 
+Supports the [PageObject](https://code.google.com/p/selenium/wiki/PageObjects)
+design pattern. Martin Fowler has a good write up about pageObjects at
+[http://martinfowler.com/bliki/PageObject.html](http://martinfowler.com/bliki/PageObject.html).
+
 - [Mocha](http://mochajs.org/) : The test execution process
 - [Chai Asserts](http://chaijs.com/) : we are using chai asserts
-- [Selenium Webdriver](https://code.google.com/p/selenium/wiki/WebDriverJs): This is the official
-selenium-webdriver Javascript port in [Npm](https://www.npmjs.com/)
+- [Selenium Webdriver](https://www.npmjs.com/package/selenium-webdriver): This is the
+official selenium-webdriver Javascript port in [Npm](https://www.npmjs.com/). Read the [UsersGuide](https://code.google.com/p/selenium/wiki/WebDriverJs)
 - [Docker](www.docker.com) allows the test cases to reliably run on your local machine or in a CI environment
 
 ## Background info
@@ -148,12 +152,20 @@ test.describe('Webdriver', function() {
 ## Page objects-based test
 
 # Running tests
+You can set an environment variable `BROWSER` to control what flavor of browser to use in testing.
+Legal values are 'chrome', 'firefox', 'safari', and 'ie', and are case sensitive. If no environment
+variable is set, the default is 'chrome'.
+
+**Note** because docker containers are linux processes, only 'chrome' and 'firefox' are allowed when
+running tests inside containers.
 ```
 # Run tests inside docker containers
+export BROWSER=chrome
 npm run selenium
 ```
 ```
 # Run tests on your desktop
+export BROWSER=chrome
 npm run selenium-standalone
 ```
 In both cases, Mocha will display results via STDOUT.
@@ -164,6 +176,7 @@ available in `results/results.xml`
 ## Running Unit tests against this repository
 ```
 npm install
+export BROWSER=chrome
 # Run unit tests inside containers
 make test
 # Run unit tests on local desktop
