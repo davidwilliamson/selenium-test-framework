@@ -1,42 +1,188 @@
 <!DOCTYPE html>
 <html>
 <head>
- <meta charset="UTF-8"> 
-<title>Unit test index</title>
-<script type="text/javascript">
-function clickFunc() {
-    document.getElementById("demo").innerHTML = "Paragraph changed.";
-}
-function selectFunc() {
-    if (document.getElementById("check1").checked) {
-        document.getElementById("check_text").innerHTML = "CHECKED";
-    } else {
-        document.getElementById("check_text").innerHTML = "CLEARED";
-    }
-}
-</script>
+    <meta charset="UTF-8">
+    <title>Unit test index</title>
+    <style>
+        body {
+            background-color: lightgrey;
+        }
+        p.test-paragraph {
+            color: red;
+        }
+    </style>
+    <script type="text/javascript">
+        var listID = 0;
+        var elementVisible = true;
+        var classAssigned = true;
+        function clickFunc() {
+            document.getElementById("demo").innerHTML = "Paragraph changed.";
+        }
+        function showHide() {
+            // toggle the visibility of the 'demo' element
+            var paraText = document.getElementById("demo");
+            if (elementVisible === false) {
+                paraText.style.visibility = 'visible';
+                document.getElementById('hidebutton').innerHTML = 'Hide paragraph';
+                elementVisible = true;
+            } else {
+                paraText.style.visibility = 'hidden';
+                document.getElementById('hidebutton').innerHTML = 'Show paragraph';
+                elementVisible = false;
+            }
+        }
+        function delayShowHide() {
+            var delayStr = document.getElementById("para_delay_duration").value;
+            if (delayStr != '') {
+                var delay = parseInt(delayStr);
+                setTimeout(showHide, delay);
+            } else {
+                showHide();
+            }
+
+        }
+        function addRemoveClass() {
+            // toggle whether the 'demo' element has the CSS class 'test-paragraph'.
+            // without the class, a CSS selector will fail.
+            var paraText = document.getElementById("demo");
+            if (classAssigned === true) {
+                paraText.removeAttribute("class");
+                document.getElementById('removeClassButton').innerHTML = 'Restore paragraph class name';
+                classAssigned = false;
+            } else {
+                paraText.className = 'test-paragraph';
+                document.getElementById('removeClassButton').innerHTML = 'Remove paragraph class name';
+                classAssigned = true;
+            }
+        }
+        function selectFunc() {
+            // Change the text of 'check_text' based on tick box state
+            if (document.getElementById("check1").checked) {
+                document.getElementById("check_text").innerHTML = "CHECKED";
+            } else {
+                document.getElementById("check_text").innerHTML = "CLEARED";
+            }
+        }
+        function insertListElement() {
+            var listField = document.getElementById("unordered_list");
+            var li = document.createElement("LI");
+            li.id = 'list_item_' + listID;
+            var t = document.createTextNode('list_item_' + listID);
+            listID += 1;
+            li.appendChild(t);
+            listField.appendChild(li);
+        }
+        function removeListElement() {
+            listID -= 1;
+            var idToRemove = 'list_item_' + listID;
+            var listItem = document.getElementById(idToRemove);
+            listItem.parentNode.removeChild(listItem);
+            // avoid underflow
+            if (listID < 1) {
+                listID = 1;
+            }
+        }
+        function delayedInsert() {
+            var delayStr = document.getElementById("delay_duration").value;
+            if (delayStr != '') {
+                var delay = parseInt(delayStr);
+                setTimeout(insertListElement, delay);
+            } else {
+                insertListElement();
+            }
+        }
+        function delayedRemove() {
+            var delayStr = document.getElementById("delay_duration").value;
+            if (delayStr != '') {
+                var delay = parseInt(delayStr);
+                setTimeout(removeListElement, delay);
+            } else {
+                removeListElement();
+            }
+        }
+        function showTextboxContents() {
+            document.getElementById('textbox_result').innerHTML = document.getElementById('textbox_input').value;
+        }
+    </script>
 </head>
-
 <body>
-
-<h1>Unit test page 1</h1>
-
-<p id="demo">A Paragraph.</p>
-<p id="check_text">Python rocks</p>
-
-
-<form id="form_field" accept-charset=utf-8
-      action="unit_test_page2.html" method="get">
-Text 1: <input type="text" name="text1"><br>
-Text 2: <input type="text" name="text2"><br>
-        <input type="checkbox" name="check1" id="check1" value="py" onclick="selectFunc()">
-             Check 1 label
-        <input type="checkbox" name="check2" value="haz"> I can haz text<br>
+<div id="sample-text">
+    <!-- This section is for extracting static text -->
+    <h1>Unit test page 1</h1>
+</div>
+<div id="login-section">
+    <!-- This section is for testing the ability to fill in a form and transition to a new page. -->
+    <h2>Pseudo Login form</h2>
+    <form id="form_field" accept-charset=utf-8 action="unit_test_page2.html" method="get">
+        Username <input type="text" name="text1" title="username"><br>
+        Password <input type="text" name="text2" title="password"><br>
         <input type="submit" name="submit" value="Submit">
-</form> 
-<button type="button" name='clickbutton' onclick="clickFunc()">
-     Click me
-</button>
+    </form>
+</div>
+<div id="css-manipulation">
+    <!-- This section is for testing the ability to extract text from the page.
+         * Initially, the text with ID = 'demo' (and class 'test-paragraph') will be 'A Paragraph.'
+         * If we click the button with ID = 'clickbutton' the text will change to 'Paragraph changed.'
 
+         * If we click on the button with ID = 'hidebutton', the text will become invisible. (Still in the DOM,
+           but visible is false)
+         * Clicking the 'hidebutton' again will make the text visible again.
+
+         * Clicking removeClassButton will remove the class 'test-paragraph' from the text. That is, looking for the
+           element with CSS locator of 'h2 > p.test-paragraph' will fail.
+         * Clicking the removeClassButton again will restore the class, so the CSS locator should now work again.
+     -->
+    <h2>Paragraph and CSS class manipulation</h2>
+    <p class='test-paragraph' id="demo">A Paragraph.</p>
+    <button type="button" name='clickbutton' id='clickbutton' onclick="clickFunc()">Change paragraph</button><br>
+    <button type="button" name='hidebutton' id="hidebutton" onclick="delayShowHide()">Hide paragraph</button>
+    <input type="text" name="para_delay_duration" value="0" id="para_delay_duration" title="Show Hide/Delay duration (msec)">
+    Delay duration (msec)
+    <br>
+    <button type="button" name='removeClassButton' id="removeClassButton" onclick="addRemoveClass()">Remove paragraph class
+        name
+    </button>
+    <br>
+</div>
+<div>
+    <!-- This section is for testing the ability to manipulate text boxes.
+         * Enter text in the textbox with ID = 'textbox_input'
+         * click button wiht ID 'showTextboxContents'
+         * Verify paragraph text with ID 'textbox_result' matches
+    -->
+    <h2>Textbox manipulation</h2>
+    <input type="text" name="textbox_input" value="" id="textbox_input" title="textbox_input"><br>
+    <button type="button" name='showTextboxContents' id="showTextboxContents" onclick="showTextboxContents()">Show textbox contents</button><br>
+    <p id="textbox_result"></p>
+</div>
+<div id="checkbox-toggler">
+    <!-- This section is for testing the ability to manipulate checkboxes.
+         The text with id='check_text' will change from 'CLEARED' to 'CHECKED' as we toggle
+     -->
+    <h2>Checkbox toggler</h2>
+    <p id="check_text">CLEARED</p>
+    <input type="checkbox" name="check1" id="check1" value="py" onclick="selectFunc()" title="check1">Checkbox
+</div>
+
+<div id="dynamic-list">
+    <!-- This section is for testing the ability to wait for DOM elements to be created or removed.
+         Set the delay duration (in msec) via text box with ID = 'delay_duration'.
+         Then click the button with ID= "addListItem".
+         Wait for a new list item (li) with ID = "list_item_N", (N=0, 1, 2, ...).
+         The item's text will be the same as its ID
+
+         Can also click the button with ID = 'removeListItem' to remove items
+       -->
+    <h2>Dynamic list with delay</h2>
+    <input type="text" name="delay_duration" value="0" id="delay_duration" title="delay_duration">Delay duration (msec)<br>
+    <div>
+        <button type="button" name="addListItem" id="addListItem" onclick="delayedInsert()">Add list item</button>
+        <button type="button" name="removeListItem" id="removeListItem" onclick="delayedRemove()">Remove List item
+        </button>
+    </div>
+    <div>
+        <ul id="unordered_list">My list</ul>
+    </div>
+</div>
 </body>
 </html> 

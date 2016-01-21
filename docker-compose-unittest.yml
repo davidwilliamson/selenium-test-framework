@@ -5,7 +5,7 @@ test_framework:
         BROWSER:
         ENV:
     volumes:
-        - "results:/test/results"
+        - "./results:/test/results"
     links:
         - hub
     command: /test/scripts/run-unittests.sh
@@ -17,5 +17,8 @@ hub:
     - "4444"
 chrome:
   image: selenium/node-chrome
+  volumes:
+    # Allows the browser container to load our test web pages as a file
+    - "./test-resources:/test/test-resources"
   links:
     - hub
